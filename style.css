@@ -1,0 +1,35 @@
+#success, #success2 {
+    visibility: hidden;
+}
+
+.cinput {
+    width: 200px;
+}
+
+#functions {
+    visibility: hidden;
+}
+
+#accountstext {
+    width: 610px;
+    height: auto;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+}
+
+#success2 {
+    width: 920px;
+    height: auto;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+}
+
+.function1 {
+
+}
+
+#secret {
+    width: 450px;
+}
+
+#function1button {
+
+}

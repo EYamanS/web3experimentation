@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Experimentation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="web3.min.js"></script>
+</head>
+<body>
+    <script>
+        const abi = [{"inputs":[{"internalType":"uint16","name":"initialSecret","type":"uint16"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"name":"getSecret","outputs":[{"internalType":"uint16","name":"","type":"uint16"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint16","name":"newsecret","type":"uint16"}],"name":"setSecret","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+        const bytecode = '608060405234801561001057600080fd5b5060405161024638038061024683398181016040528101906100329190610093565b806000806101000a81548161ffff021916908361ffff160217905550506100c0565b600080fd5b600061ffff82169050919050565b61007081610059565b811461007b57600080fd5b50565b60008151905061008d81610067565b92915050565b6000602082840312156100a9576100a8610054565b5b60006100b78482850161007e565b91505092915050565b610177806100cf6000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80635b9fdc301461003b5780637575df1614610059575b600080fd5b610043610075565b60405161005091906100c8565b60405180910390f35b610073600480360381019061006e9190610114565b61008c565b005b60008060009054906101000a900461ffff16905090565b806000806101000a81548161ffff021916908361ffff16021790555050565b600061ffff82169050919050565b6100c2816100ab565b82525050565b60006020820190506100dd60008301846100b9565b92915050565b600080fd5b6100f1816100ab565b81146100fc57600080fd5b50565b60008135905061010e816100e8565b92915050565b60006020828403121561012a576101296100e3565b5b6000610138848285016100ff565b9150509291505056fea26469706673582212203cc3ee0446fcbd35c61bd8ec5d9f5254baa0ff7c1bbd1aacbb9b80ebd5ecbc2064736f6c634300080f0033';
+        let account;
+        let accounts;
+
+        async function connectToWeb3() {
+            if (typeof window.ethereum !== 'undefined') {
+            
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                const account = accounts[0];
+                document.getElementById("success").style.visibility = "visible";
+                document.getElementById("accountstext").innerHTML = "Account: " + account;
+            
+            } else {
+                alert("Metamask is not installed \nPlease install Metamask first");
+            }
+
+        }
+        
+        async function connectToContract() {
+            const web3 = new Web3(account,'https://rinkeby.infura.io/v3/af31216fb0614152901cdc8d7e384b32');
+            const _contractAddress = document.getElementById("contractaddress").value;
+            ymnTestContract = new web3.eth.Contract(abi, _contractAddress);
+
+            document.getElementById("success2").style.visibility = "visible";
+            document.getElementById("functions").style.visibility = "visible";
+            document.getElementById("success2").innerHTML = "Successfully connected to contract: " + _contractAddress;
+        }
+
+        async function getSecretNum() {
+            ymnTestContract.setProvider(window.ethereum);
+            const secretnum = await ymnTestContract.methods.getSecret().call();
+            console.log(secretnum);
+            document.getElementById("secret").innerHTML = "Secret: " + secretnum;
+        }
+
+        async function setSecretNum() {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+            ymnTestContract.setProvider(window.ethereum);
+            const newnum = document.getElementById("newsecret").value;
+            const res = await ymnTestContract.methods.setSecret(newnum).send({from: accounts[0], gas:'1000000'})
+            getSecretNum();
+        }
+
+    </script>
+
+
+
+
+
+    <h1>Hello Wanderer!</h1>
+    <p>Let's take a look at your inbox contract on rinkeby testnet shall we?</p>
+
+    <button onclick="connectToWeb3()">Connect Me !</button>
+
+
+    <div id="success">
+    
+        <h2 class="success">Successfully connected to web3</h2>
+        <h2 id="accountstext">Account:  </h2><br>
+        
+        <div class="contractbridge">
+            <input class="cinput" type="text" id="contractaddress" placeholder="Enter contract address">
+            <button onclick="connectToContract()">Connect Me !</button>
+            <h2 id="success2">Successfully connected to contract: </h2>
+        </div>
+
+        <div id="functions">
+            <div class="function1">
+                <button id="function1button" onclick="getSecretNum()">Get Secret</button>
+                <p id="secret">Secret: </p>
+            </div>
+            <br>
+            <div class="function2">
+                <button onclick="setSecretNum()" id="function2button">Set Secret</button>
+                <input placeholder="Enter New Secret" id="newsecret">
+            </div>
+
+
+        </div>
+    
+    </div>
+
+</body>
+</html>
